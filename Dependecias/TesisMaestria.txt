@@ -1,0 +1,75 @@
+-- Database: TesisMaestria
+
+-- DROP DATABASE IF EXISTS "TesisMaestria";
+
+CREATE DATABASE "TesisMaestria"
+    WITH 
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'C'
+    LC_CTYPE = 'C'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1;
+	
+-- Crea la tabla estudiantes
+	CREATE TABLE Estudiante(
+		numero_control VARCHAR(9) PRIMARY KEY,
+		nombre VARCHAR(100),
+		primer_apellido VARCHAR(100),
+		segundo_apellido VARCHAR(100),
+		status VARCHAR(15),
+		generacion VARCHAR(12)		
+	);
+
+-- Crea la tabla tesis
+	CREATE TABLE Tesis(
+		idTesis VARCHAR(12) PRIMARY KEY,
+		titulo_tesis VARCHAR(400),
+		anio INTEGER,		
+		numero_control VARCHAR(9),
+		fecha_registro VARCHAR(60),
+		FOREIGN KEY (numero_control) REFERENCES Estudiante		
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
+	);
+
+-- Crea la tabla almacenamiento
+	CREATE TABLE Almacenamiento(
+		idTesis VARCHAR(12),
+		usb INTEGER,
+		cd INTEGER,
+		tomo INTEGER,
+		FOREIGN KEY (idTesis) REFERENCES Tesis
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+	);
+
+-- Crea la tabla prestamos
+	CREATE TABLE Prestamos(		
+		numero_control VARCHAR(9),
+		fecha_prestamo VARCHAR(20),
+		idTesis VARCHAR(12),		
+		status BOOL,
+		usb INTEGER,
+		cd INTEGER,
+		tomo INTEGER,	
+		numero_prestamo SERIAL PRIMARY KEY,	
+		FOREIGN KEY (numero_control) REFERENCES Estudiante
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
+		FOREIGN KEY (idTesis) REFERENCES Tesis
+		ON UPDATE CASCADE
+		ON DELETE CASCADE		
+	);
+-- Crea la tabla de las devoluciones
+Create table devoluciones(
+		numero_prestamo integer not null,
+		usb integer not null,
+		cd integer not null,
+		tomo integer not null,
+		fecha_devolucion varchar(50),
+		FOREIGN KEY (numero_prestamo) REFERENCES prestamos		
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
+	);
+
